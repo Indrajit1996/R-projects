@@ -1,0 +1,105 @@
+---
+title: "Advanced_r"
+author: "indrajit"
+date: "06/01/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+data = read.csv(file = "P3-Future-500-The-Dataset.csv", na.strings = c("","NA") , header = T, sep = ",")
+
+
+head(data, 6)
+tail(data)
+str(data)
+summary(data)
+data
+
+```
+```{r}
+data$ID <- factor(data$ID)
+
+data$Inception =  factor(data$Inception)
+summary(data)
+str(data)
+data[!is.na(data$Industry),]
+```
+
+```{r}
+data$Profit = as.numeric(as.character(data$Profit))
+
+class(data$Profit) 
+
+```
+
+
+
+```{r}
+data$Expenses = gsub(" Dollars"," ",data$Expenses)
+data$Expenses = gsub(",","",data$Expenses)
+
+
+data$Revenue = gsub("\\$", "", data$Revenue)
+data$Revenue = gsub(",","",data$Revenue)
+data$Expenses = as.numeric(data$Expenses)
+data$Revenue = as.numeric(data$Revenue)
+data$Expenses = as.numeric(data$Expenses)
+
+data$Growth = gsub("%", "", data$Growth)
+data$Growth = as.numeric(data$Growth)
+
+head(data)
+str(data)
+summary(data)
+```
+
+```{r}
+fet = data[!is.na(data$Employees),]
+
+fet
+which(data$Revenue == 5387469)
+
+```
+```{r}
+data_backup = data
+
+data_backup[is.na(data$Industry),]
+data <- data[!is.na(data$Industry), ]
+data
+data[!complete.cases(data$Industry),]
+data
+rownames(data) <- NULL
+data
+```
+### FACTUAL ANALYSIS
+```{r}
+data[is.na(data$State),]
+data[is.na(data$State) & data$City == "New York","State"] = "NY"
+data[is.na(data$State) & data$City == "San Francisco","State"] = "CA"
+
+data[!complete.cases(data),]
+
+data[is.na(data$Employees) & data$Industry =="Retail",]
+median_imp = median(data[data$Industry =="Retail", "Employees"], na.rm = T)
+
+data[is.na(data$Employees) & data$Industry == "Retail", "Employees"] = median_imp
+
+data[3,]
+
+# median_fin = median(data[is.na(data$Employees) & data$Industry == "Financial Services", "Employees"], na.rm = T)
+median_fin = median(data[data$Industry == "Financial Services", "Employees"], na.rm = T)
+data[is.na(data$Employees) & data$Industry == "Financial Services", "Employees"] = median_fin
+data[330,]
+```
+```{r}
+library(ggplot2)
+p <- ggplot(data = data)
+p + geom_point(aes(x = Revenue, y = Expenses,color = Industry, size=Profit))
+
+p + geom_boxplot(aes(x = Revenue, y = Expenses,color = Industry))
+```
+

@@ -1,0 +1,93 @@
+---
+title: "apply r"
+author: "indrajit"
+date: "08/01/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+getwd()
+ls()
+setwd("./Weather Data")
+getwd()
+SanFrancisco = read.csv("SanFrancisco-F.csv", row.names = 1)
+Chicago = read.csv("Chicago-F.csv", row.names = 1)
+NewYork = read.csv("NewYork-F.csv", row.names = 1)
+Houston = read.csv("Houston-F.csv", row.names = 1)
+
+is.data.frame(NewYork)
+Chicago <- as.matrix(Chicago)
+NewYork <- as.matrix(NewYork)
+Houston <- as.matrix(Houston)
+SanFrancisco <- as.matrix(SanFrancisco)
+```
+```{r}
+Weather = list(Chicago, NewYork, Houston, SanFrancisco)
+names(Weather) = c("Chicago", "NewYork", "Houston", "SanFrancisco")
+Weather
+```
+# Learn to use apply function
+```{r}
+apply(Chicago, 1, mean)
+apply(Houston, 1, mean)
+apply(NewYork, 1, mean)
+apply(SanFrancisco, 1, mean)
+
+Chicago
+```
+# Using lapply function
+```{r}
+Chicago
+t(Chicago)
+my_new_list <-lapply(Weather, t) # t(Chicago) t(Houston) t(San Francisco) t(Chicago)
+
+# row binding
+lapply(Weather, rbind, new_row = 1:12)
+
+lapply(Weather, rowMeans)
+#rowMeans
+#colMeans
+#rowSums
+#colSums
+
+lapply(Weather, "[", 1, 1)
+lapply(Weather, "[", ,3)
+lapply(Weather, function(x) round((x[1,]-x[2,])/x[2,], 2))
+
+```
+#sapply . Simplifies lapply and puts the output in a vector rather than list
+```{r}
+lapply(Weather, "[",1,7)
+sapply(Weather, "[",1,7)
+
+
+lapply(Weather, "[",1,7:12)
+sapply(Weather, "[",1,7:12) # Converts into a matrix
+
+lapply(Weather, rowMeans)
+sapply(Weather, rowMeans)
+```
+# Nesting apply function 
+```{r}
+lapply(Weather, apply, 1, max)
+lapply(Weather, function(x) apply(x,1,max)) # same as line before
+
+#Tidy up
+sapply(Weather, apply, 1, max)
+sapply(Weather, apply, 1, min)
+```
+
+```{r}
+names(which.max(Chicago[1,]))
+apply(Chicago, 1, function(x) names(which.max(x)))
+
+sapply(Weather,apply, 1, function(x) names(which.max(x)) )
+
+sapply(Weather,function(y) apply(y,1,function(x) names(which.max(x))) )
+```
+
+

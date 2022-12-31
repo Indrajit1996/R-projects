@@ -1,0 +1,162 @@
+---
+title: "UseCase WorkFlow"
+output: html_document
+# output: 
+#   html_document:
+#     toc : true
+#     toc_float : true
+#     toc_depth : 5
+---
+
+# Understanding the Problem {.tabset}
+
+## Objectve
+
+The bank wants to use an automatic system to predict whether loan can be granted to a customer based on his/her credentials
+
+## Description of Data
+
+![](/Users/indrajitv/Desktop/Lab/Datasets/dataset_description.png){width=100% height=100%}
+
+## Domain Understanding 
+
+```{r}
+"Do the Domain Understanding before even starting the Data Analysis"
+```
+
+# --------------------------------------------------------------------------------
+
+# Analysis {.tabset}
+
+## Exploratory Data Analysis (EDA) {.tabset}
+
+### Understanding Data
+
+```{r}
+data <- read.csv("Data.csv",header=T)
+```
+
+```{r}
+# Structure of the Data
+str(data)
+View(data)
+```
+
+```{r}
+# Summary of the Data
+summary(data)
+```
+
+```{r}
+head(data)
+```
+
+```{r}
+tail(data)
+```
+
+### Visualizations {.tabset}
+
+```{r}
+boxplot(x = data$Experience, col = "orange")
+```
+
+```{r}
+num_attrs <- subset(data, select=c(Age,Experience,Income,CCAvg,Mortgage))
+boxplot.matrix(as.matrix(num_attrs),
+               col = c("red","green","blue","yellow","violet"),
+               main="Boxplot for various numeric Columns in Data ")
+```
+
+## Data-Preprocessing {.tabset}
+
+### Data-Type Conversion
+
+```{r}
+str(data)
+```
+
+```{r}
+# Method-1
+
+data$ID <- as.factor(data$ID)
+data$ZIP.Code <- as.factor(data$ZIP.Code)
+
+```
+
+```{r}
+# Method-2
+
+cat_cols = c("ID","ZIP.Code","Family","Education","Personal.Loan","Securities.Account","CD.Account","Online","CreditCard")
+data[cat_cols] <- lapply(data[cat_cols], as.factor)
+lapply(data[cat_cols], as.factor)
+data[1:10,cat_cols]
+```
+
+```{r}
+str(data)
+```
+
+### Dummification
+```{r}
+library(dummies)
+class(data$Education)
+edu_dummy = dummy(data$Education)
+edu_dummy
+colnames(data)
+str(data)
+edu_dummy <- dummy(x = "Education",data = data,sep = "_")
+head(edu_dummy)
+```
+
+### Standardization
+```{r}
+#Subsetting data
+Data_NumAtr<-subset(data, select=c(Age,Experience,Income,CCAvg,Mortgage))
+
+library(vegan)
+Data_NumAtr_stndze <- decostand(Data_NumAtr,"range") # using range method 
+head(Data_NumAtr_stndze)
+```
+
+```{r}
+boxplot.matrix(as.matrix(Data_NumAtr_stndze),
+               col = c("red","green","blue","yellow","violet"),
+               xlab = "Simply",
+               ylab = "Useful",
+               main="Boxplot for various numeric Columns in Data [Normalization]")
+```
+
+### Normalization
+```{r}
+library(vegan)
+Data_NumAtr_Nrmlze <- decostand(Data_NumAtr,"standardize") # using Z-Score method 
+head(Data_NumAtr_Nrmlze)
+```
+
+```{r}
+boxplot.matrix(as.matrix(Data_NumAtr_Nrmlze),
+               col = c("red","green","blue","yellow","violet"),
+               main="Boxplot for various numeric Columns in Data [Standardization]")
+```
+
+# --------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
